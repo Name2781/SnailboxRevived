@@ -2,20 +2,14 @@
 using GmmlHooker;
 using UndertaleModLib;
 using UndertaleModLib.Models;
-using System.Linq;
-using System.Collections.Generic;
-using System;
-using WysApi.Api;
-using System.IO;
-using UndertaleModLib.Decompiler;
-using System.Reflection;
 using TSIMPH;
 using SimplexNoise;
-
+using GmmlInteropGenerator;
+using GmmlInteropGenerator.Types;
 
 namespace SnailBox
 {
-    public class GameMakerMod : IGameMakerMod
+    public partial class GameMakerMod : IGameMakerMod
     {
         public const int RoomSizeX = 4;
 
@@ -23,62 +17,6 @@ namespace SnailBox
 
         
         public static Dictionary<string, string> GMLkvp = new Dictionary<string, string>();
-
-        [GmlInterop("generate_world_values")]
-        public static string[][] GenerateWorld(ref Interop.CInstance self, ref Interop.CInstance other, double seed)
-        {
-            List<Tile> Tiles = new List<Tile>();
-            Console.WriteLine(seed);
-            Noise.Seed = (int)seed;
-            Random rng = new Random((int)seed);
-            float[,] n = Noise.Calc2D(32 * RoomSizeX, 18 * RoomSizeY, 0.1f);
-            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
-            {
-                Tiles.AddTile(new Tile(i, j, TileType.Air), true); //fill all tiles with air
-            });
-            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
-            {
-                if (n[i, j] > 120f)
-                {
-                    Tiles.AddTile(new Tile(i, j, TileType.Wall), false);
-                }
-            });
-
-
-
-            //decorations
-            Noise.Seed = ((int)(seed * 2)) - 1;
-
-            n = Noise.Calc2D(32 * RoomSizeX, 18 * RoomSizeY, 0.07f);
-
-            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
-            {
-                
-                if (n[i, j] > 150f && t.Type == TileType.Wall)
-                {
-                    Tiles.AddTile(new Tile(i, j, TileType.WallB), true);
-                }
-            });
-
-
-            //valid til
-            List<Tile> ValidTiles = new List<Tile>();
-            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
-            {
-                if (t.Type == TileType.Air)
-                {
-                    ValidTiles.Add(t);
-                }
-            });
-
-            Tile rngtile = ValidTiles[rng.Next(0, ValidTiles.Count - 1)];
-
-            Tiles.AddTile(new Tile(rngtile.X, rngtile.Y, TileType.PlayerSpawn), false);
-
-
-
-            return Tiles.GMLConvertAll().ToArray();
-        }
 
         public void Load(int audioGroup, UndertaleData data, ModData currentmod)
         {
@@ -153,5 +91,62 @@ namespace SnailBox
 
         }
 
+        [GmlInterop("generate_world_values")]
+        public static string[] GenerateWorld(ref CInstance self, ref CInstance other, double seed)
+        {
+            List<Tile> Tiles = new List<Tile>();
+            Console.WriteLine(seed);
+            Noise.Seed = (int)seed;
+            Random rng = new Random((int)seed);
+            float[,] n = Noise.Calc2D(32 * RoomSizeX, 18 * RoomSizeY, 0.1f);
+            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
+            {
+                Tiles.AddTile(new Tile(i, j, TileType.Air), true); //fill all tiles with air
+            });
+            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
+            {
+                if (n[i, j] > 120f)
+                {
+                    Tiles.AddTile(new Tile(i, j, TileType.Wall), false);
+                }
+            });
+
+
+
+            //decorations
+            Noise.Seed = ((int)(seed * 2)) - 1;
+
+            n = Noise.Calc2D(32 * RoomSizeX, 18 * RoomSizeY, 0.07f);
+
+            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
+            {
+                
+                if (n[i, j] > 150f && t.Type == TileType.Wall)
+                {
+                    Tiles.AddTile(new Tile(i, j, TileType.WallB), true);
+                }
+            });
+
+
+            //valid til
+            List<Tile> ValidTiles = new List<Tile>();
+            Tiles.ForAllPositions(delegate (int i, int j, Tile t)
+            {
+                if (t.Type == TileType.Air)
+                {
+                    ValidTiles.Add(t);
+                }
+            });
+
+            Tile rngtile = ValidTiles[rng.Next(0, ValidTiles.Count - 1)];
+
+            Tiles.AddTile(new Tile(rngtile.X, rngtile.Y, TileType.PlayerSpawn), false);
+
+
+            // return new string[] { "blah", "blah", "blah" };
+            return Tiles.GMLConvertAll().ToArray();
+        }
+
     }
+    
 }

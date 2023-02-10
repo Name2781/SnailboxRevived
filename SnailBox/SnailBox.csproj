@@ -4,11 +4,22 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SimplexNoise" Version="2.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="metadata.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <PropertyGroup>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
 
   <ItemGroup>
     <Reference Include="GmmlHooker">
@@ -26,6 +37,14 @@
     <Reference Include="WysApi">
       <HintPath>..\Dependencies\WysApi.dll</HintPath>
     </Reference>
+    <Reference Include="GmmlInteropGenerator, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Dependencies\GmmlInteropGenerator.dll</HintPath>
+      <Private>False</Private>
+  </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Analyzer Include="..\Dependencies\GmmlInteropGenerator.dll" />
   </ItemGroup>
 
 </Project>

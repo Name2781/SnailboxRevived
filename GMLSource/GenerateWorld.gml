@@ -1,9 +1,9 @@
 var vals = generate_world_values(69) //im not writing a world generator in GML if I can avoid
-for(i=0; i < array_length_1d(vals); i++)
+for(i=0; i < floor(array_length_1d(vals) / 3); i++)
 {
-	var name = vals[i][0]
-	var val_x = real(vals[i][1])
-	var val_y = real(vals[i][2])
+	var name = vals[i * 3]
+	var val_x = real(vals[(i * 3) + 1])
+	var val_y = real(vals[(i * 3) + 2])
 	if (name == "Wall")
 	{
 		instance_create_layer(val_x * 60, val_y * 60, "Walls", obj_wall)

@@ -1,20 +1,5 @@
-﻿using GmmlPatcher;
-using GmmlHooker;
-using UndertaleModLib;
-using UndertaleModLib.Models;
-using System.Linq;
-using System.Collections.Generic;
-using System;
-using WysApi.Api;
-using System.IO;
-using UndertaleModLib.Decompiler;
-using System.Reflection;
-using TSIMPH;
-
-namespace SnailBox
+﻿namespace SnailBox
 {
-
-
     public static class Extensions
     {
         public static List<string[]> GMLConvertAll(this List<IGMLSerializable> me)
@@ -26,7 +11,6 @@ namespace SnailBox
             }
             return data;
         }
-
 
         public static void ForAllPositions(this List<Tile> me, Action<int, int, Tile> tocall)
         {
@@ -40,7 +24,6 @@ namespace SnailBox
 
             }
         }
-        
 
         public static bool AddTile(this List<Tile> me, Tile t, bool force)
         {
@@ -63,12 +46,16 @@ namespace SnailBox
         }
 
         //GMLConvertAll for lists of tiles
-        public static List<string[]> GMLConvertAll(this List<Tile> me)
+        public static List<string> GMLConvertAll(this List<Tile> me)
         {
-            List<string[]> data = new List<string[]>();
+            List<string> data = new List<string>();
+            // List<string[]> data = new List<string[]>();
             foreach (Tile item in me)
             {
-                data.Add(item.SerializeToArray());
+                foreach (string val in item.SerializeToArray())
+                {
+                    data.Add(val);
+                }
             }
             return data;
         }
